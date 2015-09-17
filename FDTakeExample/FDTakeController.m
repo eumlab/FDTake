@@ -8,6 +8,7 @@
 
 #import "FDTakeController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 #define kPhotosActionSheetTag 1
 #define kVideosActionSheetTag 2
@@ -248,8 +249,24 @@ static NSString * const kStringsTableName = @"FDTake";
             return;
         }
         
-        if ([self.delegate respondsToSelector:@selector(takeController:gotPhoto:withInfo:)])
-            [self.delegate takeController:self gotPhoto:imageToSave withInfo:info];
+        if ([self.delegate respondsToSelector:@selector(takeController:gotPhoto:withInfo:)]){
+            NSURL *url = [info objectForKey:UIImagePickerControllerReferenceURL];
+            if (url) {
+                [self.delegate takeController:self gotPhoto:imageToSave withInfo:info];
+            }else{
+                ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
+                CGImageRef image = imageToSave.CGImage;
+                [library writeImageToSavedPhotosAlbum:image
+                                          orientation:ALAssetOrientationUp
+                                      completionBlock:^(NSURL *assetURL, NSError *error) {
+                                          if(error == nil) {
+                                              NSMutableDictionary *infoCopy = [info mutableCopy];
+                                              [infoCopy setObject:assetURL forKey:UIImagePickerControllerReferenceURL];
+                                              [self.delegate takeController:self gotPhoto:imageToSave withInfo:infoCopy];
+                                          }
+                                      }];
+            }
+        }
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
             [self.popover dismissPopoverAnimated:YES];

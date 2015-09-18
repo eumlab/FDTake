@@ -273,9 +273,22 @@ static NSString * const kStringsTableName = @"FDTake";
     }
     // Handle a movie capture
     else if (CFStringCompare ((CFStringRef) mediaType, kUTTypeMovie, 0)
-        == kCFCompareEqualTo) {
-        if ([self.delegate respondsToSelector:@selector(takeController:gotVideo:withInfo:)])
-            [self.delegate takeController:self gotVideo:info[UIImagePickerControllerMediaURL] withInfo:info];
+             == kCFCompareEqualTo) {
+        if ([self.delegate respondsToSelector:@selector(takeController:gotVideo:withInfo:)]){
+            NSURL *url = [info objectForKey:UIImagePickerControllerReferenceURL];
+            if (url) {
+                [self.delegate takeController:self gotVideo:info[UIImagePickerControllerMediaURL] withInfo:info];
+            }else{
+                ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
+                [library writeVideoAtPathToSavedPhotosAlbum:info[UIImagePickerControllerMediaURL] completionBlock:^(NSURL *assetURL, NSError *error) {
+                    if(error == nil) {
+                        NSMutableDictionary *infoCopy = [info mutableCopy];
+                        [infoCopy setObject:assetURL forKey:UIImagePickerControllerReferenceURL];
+                        [self.delegate takeController:self gotVideo:info[UIImagePickerControllerReferenceURL] withInfo:infoCopy];
+                    }
+                }];
+            }
+        }
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];

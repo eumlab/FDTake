@@ -284,7 +284,7 @@ static NSString * const kStringsTableName = @"FDTake";
                     if(error == nil) {
                         NSMutableDictionary *infoCopy = [info mutableCopy];
                         [infoCopy setObject:assetURL forKey:UIImagePickerControllerReferenceURL];
-                        [self.delegate takeController:self gotVideo:info[UIImagePickerControllerReferenceURL] withInfo:infoCopy];
+                        [self.delegate takeController:self gotVideo:infoCopy[UIImagePickerControllerReferenceURL] withInfo:infoCopy];
                     }
                 }];
             }

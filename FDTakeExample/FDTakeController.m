@@ -257,7 +257,7 @@ static NSString * const kStringsTableName = @"FDTake";
                 ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
                 CGImageRef image = imageToSave.CGImage;
                 [library writeImageToSavedPhotosAlbum:image
-                                          orientation:ALAssetOrientationUp
+                                          orientation:imageToSave.imageOrientation
                                       completionBlock:^(NSURL *assetURL, NSError *error) {
                                           if(error == nil) {
                                               NSMutableDictionary *infoCopy = [info mutableCopy];

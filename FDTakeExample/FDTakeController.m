@@ -254,11 +254,17 @@ static NSString * const kStringsTableName = @"FDTake";
             if (url) {
                 [self.delegate takeController:self gotPhoto:imageToSave withInfo:info];
             }else{
+                if ([self.delegate respondsToSelector:@selector(willSaveToAlbum)]) {
+                    [self.delegate willSaveToAlbum];
+                }
                 ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
                 CGImageRef image = imageToSave.CGImage;
                 [library writeImageToSavedPhotosAlbum:image
                                           orientation:imageToSave.imageOrientation
                                       completionBlock:^(NSURL *assetURL, NSError *error) {
+                                          if ([self.delegate respondsToSelector:@selector(didSaveToAlbum)]) {
+                                              [self.delegate didSaveToAlbum];
+                                          }
                                           if(error == nil) {
                                               NSMutableDictionary *infoCopy = [info mutableCopy];
                                               [infoCopy setObject:assetURL forKey:UIImagePickerControllerReferenceURL];
@@ -279,8 +285,14 @@ static NSString * const kStringsTableName = @"FDTake";
             if (url) {
                 [self.delegate takeController:self gotVideo:info[UIImagePickerControllerMediaURL] withInfo:info];
             }else{
+                if ([self.delegate respondsToSelector:@selector(willSaveToAlbum)]) {
+                    [self.delegate willSaveToAlbum];
+                }
                 ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
                 [library writeVideoAtPathToSavedPhotosAlbum:info[UIImagePickerControllerMediaURL] completionBlock:^(NSURL *assetURL, NSError *error) {
+                    if ([self.delegate respondsToSelector:@selector(didSaveToAlbum)]) {
+                        [self.delegate didSaveToAlbum];
+                    }
                     if(error == nil) {
                         NSMutableDictionary *infoCopy = [info mutableCopy];
                         [infoCopy setObject:assetURL forKey:UIImagePickerControllerReferenceURL];

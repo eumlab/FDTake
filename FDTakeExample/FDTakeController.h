@@ -32,6 +32,14 @@
  * Delegate method after the user has successfully taken or selected a video
  */
 - (void)takeController:(FDTakeController *)controller gotVideo:(NSURL *)video withInfo:(NSDictionary *)info;
+/**
+ * Delegate method before save to album
+ */
+- (void)willSaveToAlbum;
+/**
+ * Delegate method after save to album
+ */
+- (void)didSaveToAlbum;
 @end
 
 @interface FDTakeController : NSObject <UIImagePickerControllerDelegate>

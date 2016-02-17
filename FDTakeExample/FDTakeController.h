@@ -40,6 +40,12 @@
  * Delegate method after save to album
  */
 - (void)didSaveToAlbum;
+/**
+ *  Delegate method to use another method to select photo
+ *
+ *  @return YES if use another one
+ */
+- (BOOL)selectPhotoUseOther;
 @end
 
 @interface FDTakeController : NSObject <UIImagePickerControllerDelegate>

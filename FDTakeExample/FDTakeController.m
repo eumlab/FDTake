@@ -168,6 +168,15 @@ static NSString * const kStringsTableName = @"FDTake";
         if ([self.delegate respondsToSelector:@selector(takeController:didCancelAfterAttempting:)])
             [self.delegate takeController:self didCancelAfterAttempting:NO];
     } else {
+        NSInteger sourceType = [(self.sources)[buttonIndex] integerValue];
+        if (UIImagePickerControllerSourceTypeCamera != sourceType && kPhotosActionSheetTag == actionSheet.tag) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(selectPhotoUseOther)]) {
+                if ([self.delegate selectPhotoUseOther]) {
+                    return;
+                }
+            }
+        }
+        
         self.imagePicker.sourceType = [(self.sources)[buttonIndex] integerValue];
         
         if ((self.imagePicker.sourceType==UIImagePickerControllerSourceTypeCamera) || (self.imagePicker.sourceType==UIImagePickerControllerSourceTypeCamera)) {
